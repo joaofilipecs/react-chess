@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import './App.css'
-import Board from './components/Board/Board.jsx'
+import Board from './components/chess-components/Board/Board.jsx'
 
 function App() {
 

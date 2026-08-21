@@ -1,0 +1,24 @@
+.darkSquare {
+    background-color: var(--whiteSquare);
+}
+.whiteSquare {
+    background-color: var(--whiteSquare);
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    /*margin: 20px;*/
+    width: 100%;
+    height: 100%;
+}
+
+.pieceImage {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.board {
+    margin: auto;
+}
