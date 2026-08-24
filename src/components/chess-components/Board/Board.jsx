@@ -1,23 +1,37 @@
 import styles from "./Board.module.css";
-import VirtualBoard from "../../../classes/chess-classes/VirtualBoard.js";
-import { Piece, King } from "../../../classes/chess-classes/Pieces.js";
+import ChessGame from "../../../classes/chess-classes/ChessGame.js";
 import Square from "../Square/Square.jsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { VisualUtility } from "../../../classes/Utilities.jsx";
 
-const virtualBoard = new VirtualBoard();
+const gm = new ChessGame(true, { time: 3600000 }, Date.now(), [
+          { player: "joseph", color: "white" },
+          { player: "john", color: "black" }
+]);
+const virtualBoard = gm.virtualBoard;
 
 export default function Board({ className }) {
-          console.log("board component", virtualBoard.toString());
           const [board, setBoard] = useState(virtualBoard.board);
+
+          useEffect(()=>{
+                    gm.setTestPosition();
+                    console.log('useEffect')
+                    setBoard(virtualBoard.board);
+          },[])
 
           function createRow(rowIndex) {
                     return board[rowIndex].map((piece, index, row) => {
                               let rowIndex = board.indexOf(row);
 
                               return (
-                                        <Square key={index} row={rowIndex} col={index}>
+                                        <Square
+                                                  onClick={() => {
+                                                            console.log("clicado no square");
+                                                  }}
+                                                  key={index}
+                                                  row={rowIndex}
+                                                  col={index}>
                                                   {VisualUtility.pieceToPNGImg(piece, styles)}
                                         </Square>
                               );
@@ -38,18 +52,18 @@ export default function Board({ className }) {
                               </div>
 
                               <br></br>
+
                               <button
                                         onClick={() => {
-                                                  console.log("toMove", virtualBoard.toString());
-                                                  virtualBoard.insertPiece(virtualBoard.removePiece(0, 0), 1, 0);
+                                                  gm.setStandardPosition();
 
-                                                  console.log("moved before updating state", virtualBoard.toString());
                                                   setBoard(virtualBoard.board);
-
-                                                  console.log("moved", virtualBoard.toString());
                                         }}>
-                                        Move White King
+                                        Update to Standard Position
                               </button>
+
+                              {/*
+
                               <button
                                         onClick={() => {
                                                   virtualBoard.insertPiece(virtualBoard.removePiece(0, 1), 0, 0);
@@ -68,6 +82,7 @@ export default function Board({ className }) {
                                         }}>
                                        setBoard (update)
                               </button>
+                              */}
                     </>
           );
 }

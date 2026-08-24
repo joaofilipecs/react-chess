@@ -25,9 +25,6 @@ class VirtualBoard {
         this.#board[0][0] = new King("White");
         this.#board[0][1] = new King("Black");
         this.#board[0][2] = new Queen("Black");
-
-        console.log("from Virtual", this.toString.bind(this)());
-
     }
 
     get board() {
@@ -36,15 +33,14 @@ class VirtualBoard {
         const copy = [];
 
         for (let i = 0; i < this.#rows; i++) {
-              const rowArray = [...this.#board[i]];
+            const rowArray = [...this.#board[i]];
             copy[i] = rowArray;
         }
 
-        console.log('copy', copy)
         return copy;
     }
 
-    getPiece(row, col){
+    getPiece(row, col) {
         return this.#board[row][col];
     }
 
@@ -60,7 +56,6 @@ class VirtualBoard {
         }
         const removed = this.#board[row][col];
         this.#board[row][col] = null;
-
 
         return removed;
     }
@@ -83,6 +78,14 @@ class VirtualBoard {
         }
 
         this.#board[row][col] = piece;
+    }
+
+    cleanBoard() {
+        for (let i = 0; i < this.#rows; i++) {
+            for (let j = 0; j < this.#cols; j++) {
+                this.#board[i][j] = null;
+            }
+        }
     }
     toString() {
         let boardStr = "";

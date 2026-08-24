@@ -1,13 +1,12 @@
-import { useState } from 'react'
-import './App.css'
-import Board from './components/chess-components/Board/Board.jsx'
+import "./App.css";
+import Board from "./components/chess-components/Board/Board.jsx";
 
 function App() {
-
-  
-  return <div>
-      <Board className="board"/>
-  </div>
+    return (
+        <div>
+            <Board className="board" />
+        </div>
+    );
 }
 
-export default App
+export default App;

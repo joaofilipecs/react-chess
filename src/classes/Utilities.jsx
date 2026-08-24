@@ -23,28 +23,17 @@ class VisualUtility{
 
          switch (piece?.constructor.name) {
                               case "King":
-                                        console.log("color", piece.color.toLowerCase());
-                                        return (<img className={styles.pieceImage} src={(piece.color === "White") ? whiteKing : blackKing}></img>);
+                                        return (<img className={styles.pieceImage} src={(piece.color.toLowerCase() === "white") ? whiteKing : blackKing}></img>);
                               case "Queen":
-
-                                        console.log("color", piece.color.toLowerCase());
-                                        return (<img className={styles.pieceImage} src={(piece.color === "White") ? whiteQueen : blackQueen}></img>);
+                                        return (<img className={styles.pieceImage} src={(piece.color.toLowerCase() === "white") ? whiteQueen : blackQueen}></img>);
                               case "Rook":
-
-                                        console.log("color", piece.color.toLowerCase());
-                                        return (<img className={styles.pieceImage} src={(piece.color === "White") ? whiteRook : blackRook}></img>);
+                                        return (<img className={styles.pieceImage} src={(piece.color.toLowerCase() === "white") ? whiteRook : blackRook}></img>);
                               case "Bishop":
-
-                                        console.log("color", piece.color.toLowerCase());
-                                        return (<img className={styles.pieceImage} src={(piece.color === "White") ? whiteBishop : blackBishop}></img>);
+                                        return (<img className={styles.pieceImage} src={(piece.color.toLowerCase() === "white") ? whiteBishop : blackBishop}></img>);
                               case "Knight":
-
-                                        console.log("color", piece.color.toLowerCase());
-                                        return (<img className={styles.pieceImage} src={(piece.color === "White") ? whiteKnight : blackKnight}></img>);
+                                        return (<img className={styles.pieceImage} src={(piece.color.toLowerCase() === "white") ? whiteKnight : blackKnight}></img>);
                               case "Pawn":
-
-                                        console.log("color", piece.color.toLowerCase());
-                                        return (<img className={styles.pieceImage} src={(piece.color === "White") ? whitePawn : blackPawn}></img>);
+                                        return (<img className={styles.pieceImage} src={(piece.color.toLowerCase() === "white") ? whitePawn : blackPawn}></img>);
                               default:
                                         return null;
                     }
