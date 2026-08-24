@@ -6,7 +6,7 @@ function App() {
 
   
   return <div>
-      <Board/>
+      <Board className="board"/>
   </div>
 }
 
