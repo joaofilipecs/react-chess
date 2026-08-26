@@ -40,6 +40,13 @@ class VirtualBoard {
         return copy;
     }
 
+    get rows(){
+        return this.#rows;
+    }
+    get cols(){
+        return this.#cols;
+    }
+
     getPiece(row, col) {
         return this.#board[row][col];
     }

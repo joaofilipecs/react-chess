@@ -18,7 +18,30 @@
     width: 50px;
     height: 50px;
     outline: 1px solid gray;
-    padding: 6px;
+    padding: 6px; /*50 + 12 = 62 */
     /*border: none;*/
 
+    position: relative;
+}
+
+.legalMove{
+    /*background-color: red;*/
+
+    &::after{
+        content: '';
+        width: 16px;
+        height: 16px;
+        display: block;
+
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
+
+        /*user-select: none;*/
+        border-radius: 50%;
+        background-color: rgba(256,256,256,.5);
+    }
 }

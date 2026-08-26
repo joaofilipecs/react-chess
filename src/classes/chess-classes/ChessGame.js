@@ -38,16 +38,21 @@ class ChessGame {
         this.#startDate = start;
         this.#endDate = null; // when the game finishes.
         this.#players = [...players];
-        this.#calculator = new calculator(this.#virtualBoard);
+        this.calculator = new calculator(this.#virtualBoard);
         this.#turn = "black";
         this.#capturedPieces = [];
     }
 
+    get capturedPieces(){
+        return [...this.#capturedPieces];
+    }
+
+    get turn(){
+        return this.#turn;
+    }
+
     get virtualBoard() {
         return this.#virtualBoard;
-    }
-    set virtualBoard(board) {
-        this.#virtualBoard = board;
     }
 
     getPiece(row, col) {
@@ -68,20 +73,20 @@ class ChessGame {
 
     makeMove(origin, target) {
         // {row: 0, col: 0}, {row: 7, col: 7}
-        console.log(target, this.#calculator.possibleLegalMoves(origin));
+        console.log('console makemove', target, this.calculator.legalMoves(origin));
         const board = this.#virtualBoard;
         if (!(board.getPiece(origin.row, origin.col).color.toLowerCase() === this.#turn.toLowerCase())) {
             throw new ChessError(
                 `Now it's ${this.#turn}'s turn. The piece on rank ${origin.row + 1} and file ${origin.col + 1} is not ${this.#turn}`
             );
         }
-        if (!this.#calculator.possibleLegalMoves(origin)[target.row][target.col]) {
+        if (!this.calculator.legalMoves(origin)[target.row][target.col]) {
             throw new ChessError(
                 `The square on rank ${target.row + 1} and file ${target.col + 1} is illegal for the piece on rank ${origin.row + 1} and file ${origin.col + 1}`
             );
         }
 
-        const captured = board[(target.row, target.col)];
+        const captured = board.getPiece(target.row, target.col);
         if (captured) {
             this.#capturedPieces.push(captured);
             board.removePiece(target.row, target.col);
@@ -89,6 +94,11 @@ class ChessGame {
 
         const originPiece = board.removePiece(origin.row, origin.col);
         board.insertPiece(originPiece, target.row, target.col);
+
+        this.#turn = (this.#turn.toLowerCase() === 'black') ? 'white' : 'black';
+
+
+        this.consoleBoard();
     }
 
     setStandardPosition() {
@@ -107,7 +117,7 @@ class ChessGame {
         board.insertPiece(Piece.createPiece("p", "white"), 1, 0);
         board.insertPiece(Piece.createPiece("p", "white"), 1, 1);
         board.insertPiece(Piece.createPiece("p", "white"), 1, 2);
-        board.insertPiece(Piece.createPiece("p", "white"), 1, 3);
+        //board.insertPiece(Piece.createPiece("p", "white"), 1, 3);
         board.insertPiece(Piece.createPiece("p", "white"), 1, 4);
         board.insertPiece(Piece.createPiece("p", "white"), 1, 5);
         board.insertPiece(Piece.createPiece("p", "white"), 1, 6);
@@ -125,7 +135,7 @@ class ChessGame {
         board.insertPiece(Piece.createPiece("p", "black"), 6, 0);
         board.insertPiece(Piece.createPiece("p", "black"), 6, 1);
         board.insertPiece(Piece.createPiece("p", "black"), 6, 2);
-        board.insertPiece(Piece.createPiece("p", "black"), 6, 3);
+        //board.insertPiece(Piece.createPiece("p", "black"), 6, 3);
         board.insertPiece(Piece.createPiece("p", "black"), 6, 4);
         board.insertPiece(Piece.createPiece("p", "black"), 6, 5);
         board.insertPiece(Piece.createPiece("p", "black"), 6, 6);
@@ -136,8 +146,9 @@ class ChessGame {
         const board = this.#virtualBoard;
         board.cleanBoard();
 
-        board.insertPiece(Piece.createPiece("k", "white"), 0, 0);
-        board.insertPiece(Piece.createPiece("k", "black"), 0, 2);
+        board.insertPiece(Piece.createPiece("q", "white"), 5, 5);
+        board.insertPiece(Piece.createPiece("q", "white"), 1, 5);
+        board.insertPiece(Piece.createPiece("q", "black"), 0, 5);
 
 
 

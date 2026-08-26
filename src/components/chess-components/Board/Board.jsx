@@ -13,25 +13,54 @@ const virtualBoard = gm.virtualBoard;
 
 export default function Board({ className }) {
           const [board, setBoard] = useState(virtualBoard.board);
+          const [selected, setSelected] = useState(null); // objeto com row e col
 
-          useEffect(()=>{
+          const legalMoves = gm.calculator.legalMoves(selected);
+          console.log("in board, legal moves", legalMoves);
+          useEffect(() => {
                     gm.setTestPosition();
-                    console.log('useEffect')
                     setBoard(virtualBoard.board);
-          },[])
+          }, []);
 
           function createRow(rowIndex) {
                     return board[rowIndex].map((piece, index, row) => {
-                              let rowIndex = board.indexOf(row);
+                              const rowIndex = board.indexOf(row);
+                              const colIndex = index;
 
                               return (
                                         <Square
+                                                  legalMove={legalMoves && legalMoves[rowIndex][colIndex] ? "legalMove" : ""}
                                                   onClick={() => {
-                                                            console.log("clicado no square");
+                                                            console.log("selected", selected);
+
+                                                            try {if (selected) {
+                                                                      if (legalMoves[rowIndex][colIndex]) {
+                                                                                console.log('moving...')
+                                                                                gm.makeMove(selected, {
+                                                                                          row: rowIndex,
+                                                                                          col: colIndex
+                                                                                });
+                                                                                setBoard(virtualBoard.board);
+                                                                                setSelected(null);
+                                                                      } else if (gm.getPiece(rowIndex, colIndex)) {
+                                                                                setSelected({
+                                                                                          row: rowIndex,
+                                                                                          col: colIndex
+                                                                                });
+                                                                      } else {
+                                                                                setSelected(null);
+                                                                      }
+                                                            } else {
+                                                                      setSelected({ row: rowIndex, col: colIndex });
+                                                            }
+                                                                } catch(chessError){
+                                                                          console.error(chessError);
+                                                                          setSelected(null)
+                                                                }
                                                   }}
-                                                  key={index}
+                                                  key={colIndex}
                                                   row={rowIndex}
-                                                  col={index}>
+                                                  col={colIndex}>
                                                   {VisualUtility.pieceToPNGImg(piece, styles)}
                                         </Square>
                               );
@@ -40,6 +69,8 @@ export default function Board({ className }) {
 
           return (
                     <>
+                             Captured pieces: {gm.capturedPieces.map((piece) => `${piece.constructor.name}(${piece.color})`).join(", ")}
+
                               <div className={className}>
                                         <div className={styles["row"]}>{createRow(0)}</div>
                                         <div className={styles["row"]}>{createRow(1)}</div>
