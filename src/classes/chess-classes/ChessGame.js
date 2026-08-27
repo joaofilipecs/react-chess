@@ -38,7 +38,7 @@ class ChessGame {
         this.#startDate = start;
         this.#endDate = null; // when the game finishes.
         this.#players = [...players];
-        this.calculator = new calculator(this.#virtualBoard);
+        this.calculator = new calculator(this);
         this.#turn = "black";
         this.#capturedPieces = [];
     }
@@ -146,9 +146,11 @@ class ChessGame {
         const board = this.#virtualBoard;
         board.cleanBoard();
 
-        board.insertPiece(Piece.createPiece("q", "white"), 5, 5);
-        board.insertPiece(Piece.createPiece("q", "white"), 1, 5);
-        board.insertPiece(Piece.createPiece("q", "black"), 0, 5);
+        board.insertPiece(Piece.createPiece("k", "white"), 0, 0);
+        board.insertPiece(Piece.createPiece("q", "white"), 0, 2);
+        board.insertPiece(Piece.createPiece("r", "white"), 0, 1);
+        board.insertPiece(Piece.createPiece("q", "black"), 7, 1);
+        board.insertPiece(Piece.createPiece("k", "black"), 7, 0);
 
 
 
