@@ -39,15 +39,20 @@ class ChessGame {
         this.#endDate = null; // when the game finishes.
         this.#players = [...players];
         this.calculator = new calculator(this);
-        this.#turn = "black";
         this.#capturedPieces = [];
+        this.FEN = "";
+        this.#turn = "white";
+        this.castlingAvailable = { whiteKing: true, whiteQueen: true, blackKing: true, blackQueen: true };
+        this.EnPassantSquare = { row: null, col: null };
+        this.halfMoves = 0;
+        this.fullMoves = 1;
     }
 
-    get capturedPieces(){
+    get capturedPieces() {
         return [...this.#capturedPieces];
     }
 
-    get turn(){
+    get turn() {
         return this.#turn;
     }
 
@@ -72,8 +77,6 @@ class ChessGame {
     }
 
     makeMove(origin, target) {
-        // {row: 0, col: 0}, {row: 7, col: 7}
-        console.log('console makemove', target, this.calculator.legalMoves(origin));
         const board = this.#virtualBoard;
         if (!(board.getPiece(origin.row, origin.col).color.toLowerCase() === this.#turn.toLowerCase())) {
             throw new ChessError(
@@ -95,8 +98,7 @@ class ChessGame {
         const originPiece = board.removePiece(origin.row, origin.col);
         board.insertPiece(originPiece, target.row, target.col);
 
-        this.#turn = (this.#turn.toLowerCase() === 'black') ? 'white' : 'black';
-
+        this.#turn = this.#turn.toLowerCase() === "black" ? "white" : "black";
 
         this.consoleBoard();
     }
@@ -146,14 +148,30 @@ class ChessGame {
         const board = this.#virtualBoard;
         board.cleanBoard();
 
+
+        // bishop pin
+        //board.insertPiece(Piece.createPiece("k", "white"), 0, 0);
+        //board.insertPiece(Piece.createPiece("q", "white"), 0,6);
+        //board.insertPiece(Piece.createPiece("r", "white"), 1, 0);
+        //board.insertPiece(Piece.createPiece("b", "white"), 2, 2);
+        //board.insertPiece(Piece.createPiece("q", "black"), 5, 5);
+        //board.insertPiece(Piece.createPiece("k", "black"), 7, 0);
+
+        // queen pin
+        //board.insertPiece(Piece.createPiece("k", "white"), 0, 0);
+        //board.insertPiece(Piece.createPiece("q", "white"), 2,2);
+        //board.insertPiece(Piece.createPiece("r", "white"), 1, 0);
+        //board.insertPiece(Piece.createPiece("b", "white"), 0, 6);
+        //board.insertPiece(Piece.createPiece("q", "black"), 5, 5);
+        //board.insertPiece(Piece.createPiece("k", "black"), 7, 0);
+        //
+        // both queen straight pin
         board.insertPiece(Piece.createPiece("k", "white"), 0, 0);
-        board.insertPiece(Piece.createPiece("q", "white"), 0, 2);
-        board.insertPiece(Piece.createPiece("r", "white"), 0, 1);
-        board.insertPiece(Piece.createPiece("q", "black"), 7, 1);
+        board.insertPiece(Piece.createPiece("q", "white"), 3,0);
+        board.insertPiece(Piece.createPiece("r", "white"), 1, 2);
+        board.insertPiece(Piece.createPiece("b", "white"), 0, 6);
+        board.insertPiece(Piece.createPiece("q", "black"), 5, 0);
         board.insertPiece(Piece.createPiece("k", "black"), 7, 0);
-
-
-
     }
 
     setBoardFromFEN(FEN) {
@@ -169,6 +187,7 @@ class ChessGame {
     consoleBoard() {
         console.log(this.#virtualBoard.toString());
     }
+
 }
 
 export default ChessGame;

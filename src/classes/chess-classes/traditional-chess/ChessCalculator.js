@@ -10,13 +10,28 @@ class ChessCalculator {
     }
 
     legalMoves(origin) {
+
         if (!origin) {
             return createFalseMatrix();
         }
 
+
+
+
         const virtualBoard = this.#virtualBoard;
         const piece = virtualBoard.getPiece(origin.row, origin.col);
         const legalMoves = createFalseMatrix();
+
+
+
+
+
+        piece.calculateLegalMoves(origin, legalMoves, this.#chessGame);
+
+        if(true){
+        return legalMoves;}
+
+
 
         const simpleEnemy = (row, col)=>{
                 legalMoves[row][col] = true;

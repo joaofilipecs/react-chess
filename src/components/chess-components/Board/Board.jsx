@@ -15,8 +15,8 @@ export default function Board({ className }) {
           const [board, setBoard] = useState(virtualBoard.board);
           const [selected, setSelected] = useState(null); // objeto com row e col
 
-          const legalMoves = gm.calculator.legalMoves(selected);
-          console.log("in board, legal moves", legalMoves);
+          const legalMoves = (selected ? gm.getPiece(selected.row, selected.col) : null) ? gm.calculator.legalMoves(selected) : null;
+          //console.log("in board, legal moves", legalMoves);
           useEffect(() => {
                     gm.setTestPosition();
                     setBoard(virtualBoard.board);
@@ -33,7 +33,7 @@ export default function Board({ className }) {
                                                   onClick={() => {
                                                             console.log("selected", selected);
 
-                                                            try {if (selected) {
+                                                            try {if (selected && legalMoves) {
                                                                       if (legalMoves[rowIndex][colIndex]) {
                                                                                 console.log('moving...')
                                                                                 gm.makeMove(selected, {
@@ -92,7 +92,18 @@ export default function Board({ className }) {
                                         }}>
                                         Update to Standard Position
                               </button>
-
+                            <button
+                                        onClick={() => {
+                                                  console.log(gm.getKingPosition('white'))
+                                        }}>
+                                        Console White King Position
+                              </button>
+                            <button
+                                        onClick={() => {
+                                                  console.log(gm.getKingPosition('black'))
+                                        }}>
+                                        Console Black King Position
+                              </button>
                               {/*
 
                               <button
