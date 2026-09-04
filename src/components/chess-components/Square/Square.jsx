@@ -9,7 +9,7 @@ export default function Square({legalMove, row, col, children, onClick}){
 
  //return <div onClick={onClick} className={styles[`${(row%2 === col%2) ? 'white' : 'dark'}Square`] + " " + styles.square}>
 
- return <div onClick={onClick} className={`${(row%2 === col%2) ? styles.whiteSquare : styles.darkSquare} ${styles.square} ${(legalMove) ? styles.legalMove : ''}`} >
+ return <div onClick={onClick} className={`${(row%2 === col%2) ? styles.darkSquare : styles.whiteSquare} ${styles.square} ${(legalMove) ? styles.legalMove : ''}`} >
      {children}
  </div>
 }

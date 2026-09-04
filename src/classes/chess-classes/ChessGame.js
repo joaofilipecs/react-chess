@@ -29,6 +29,7 @@ class ChessGame {
     #calculator;
     #turn;
     #capturedPieces;
+    #enPassantSquare;
 
     constructor(isOcurring, timeControl, start, players, calculator = ChessCalculator, row = 8, col = 8) {
         this.#virtualBoard = new VirtualBoard(row, col);
@@ -43,11 +44,14 @@ class ChessGame {
         this.FEN = "";
         this.#turn = "white";
         this.castlingAvailable = { whiteKing: true, whiteQueen: true, blackKing: true, blackQueen: true };
-        this.EnPassantSquare = { row: null, col: null };
+        this.#enPassantSquare = { row: null, col: null };
         this.halfMoves = 0;
         this.fullMoves = 1;
     }
 
+    get enPassantSquare(){
+        return this.#enPassantSquare;
+    }
     get capturedPieces() {
         return [...this.#capturedPieces];
     }
@@ -89,7 +93,7 @@ class ChessGame {
             );
         }
 
-        const captured = board.getPiece(target.row, target.col);
+        let captured = board.getPiece(target.row, target.col);
         if (captured) {
             this.#capturedPieces.push(captured);
             board.removePiece(target.row, target.col);
@@ -97,6 +101,20 @@ class ChessGame {
 
         const originPiece = board.removePiece(origin.row, origin.col);
         board.insertPiece(originPiece, target.row, target.col);
+
+
+            this.#enPassantSquare = null;
+        if (originPiece.constructor.name === 'Pawn'){
+            if(Math.abs(target.row - origin.row) === 2){
+                this.#enPassantSquare = {row: (origin.row / 2) + (target.row / 2), col: (origin.col /2) + (target.col / 2)};
+        }
+            if(!captured && origin.col !== target.col){
+                captured = board.getPiece(origin.row, target.col);
+                this.#capturedPieces.push(captured);
+                board.removePiece(origin.row, target.col);
+            }
+        }
+
 
         this.#turn = this.#turn.toLowerCase() === "black" ? "white" : "black";
 
@@ -119,7 +137,7 @@ class ChessGame {
         board.insertPiece(Piece.createPiece("p", "white"), 1, 0);
         board.insertPiece(Piece.createPiece("p", "white"), 1, 1);
         board.insertPiece(Piece.createPiece("p", "white"), 1, 2);
-        //board.insertPiece(Piece.createPiece("p", "white"), 1, 3);
+        board.insertPiece(Piece.createPiece("p", "white"), 1, 3);
         board.insertPiece(Piece.createPiece("p", "white"), 1, 4);
         board.insertPiece(Piece.createPiece("p", "white"), 1, 5);
         board.insertPiece(Piece.createPiece("p", "white"), 1, 6);
@@ -137,7 +155,7 @@ class ChessGame {
         board.insertPiece(Piece.createPiece("p", "black"), 6, 0);
         board.insertPiece(Piece.createPiece("p", "black"), 6, 1);
         board.insertPiece(Piece.createPiece("p", "black"), 6, 2);
-        //board.insertPiece(Piece.createPiece("p", "black"), 6, 3);
+        board.insertPiece(Piece.createPiece("p", "black"), 6, 3);
         board.insertPiece(Piece.createPiece("p", "black"), 6, 4);
         board.insertPiece(Piece.createPiece("p", "black"), 6, 5);
         board.insertPiece(Piece.createPiece("p", "black"), 6, 6);
@@ -166,12 +184,54 @@ class ChessGame {
         //board.insertPiece(Piece.createPiece("k", "black"), 7, 0);
         //
         // both queen straight pin
+        //board.insertPiece(Piece.createPiece("k", "white"), 0, 0);
+        //board.insertPiece(Piece.createPiece("q", "white"), 3,0);
+        //board.insertPiece(Piece.createPiece("r", "white"), 1, 2);
+        //board.insertPiece(Piece.createPiece("n", "white"), 0, 2);
+        //board.insertPiece(Piece.createPiece("b", "white"), 0, 6);
+        //board.insertPiece(Piece.createPiece("p", "white"), 1, 7);
+        //board.insertPiece(Piece.createPiece("p", "white"), 4, 6);
+        //board.insertPiece(Piece.createPiece("q", "black"), 5, 0);
+        //board.insertPiece(Piece.createPiece("k", "black"), 7, 0);
+        //board.insertPiece(Piece.createPiece("p", "black"), 6, 7);
+        //board.insertPiece(Piece.createPiece("p", "black"), 3, 6);
+        //
+        // pawn pin
+        //board.insertPiece(Piece.createPiece("k", "white"), 0, 0);
+        //board.insertPiece(Piece.createPiece("q", "white"), 2,5);
+        //board.insertPiece(Piece.createPiece("r", "white"), 1, 2);
+        //board.insertPiece(Piece.createPiece("n", "white"), 0, 2);
+        //board.insertPiece(Piece.createPiece("b", "white"), 0, 6);
+        //board.insertPiece(Piece.createPiece("p", "white"), 1, 1);
+        //board.insertPiece(Piece.createPiece("p", "white"), 4, 6);
+        //board.insertPiece(Piece.createPiece("q", "black"), 4, 4);
+        //board.insertPiece(Piece.createPiece("k", "black"), 7, 0);
+        //board.insertPiece(Piece.createPiece("p", "black"), 6, 1);
+        //board.insertPiece(Piece.createPiece("p", "black"), 3, 6);
+
+        // kings test avoiding emnemy knight moves
+        //board.insertPiece(Piece.createPiece("k", "white"), 0, 0);
+        //board.insertPiece(Piece.createPiece("q", "white"), 2,5);
+        //board.insertPiece(Piece.createPiece("r", "white"), 1, 2);
+        //board.insertPiece(Piece.createPiece("n", "white"), 4, 2);
+        //board.insertPiece(Piece.createPiece("b", "white"), 0, 6);
+        //board.insertPiece(Piece.createPiece("p", "white"), 1, 1);
+        //board.insertPiece(Piece.createPiece("p", "white"), 4, 6);
+        //board.insertPiece(Piece.createPiece("q", "black"), 4, 4);
+        //board.insertPiece(Piece.createPiece("k", "black"), 7, 1);
+        //board.insertPiece(Piece.createPiece("p", "black"), 6, 4);
+        //board.insertPiece(Piece.createPiece("p", "black"), 3, 6);
+
+        // kings test avoiding emnemy pawn moves
+        //board.insertPiece(Piece.createPiece("k", "white"), 0, 0);
+        //board.insertPiece(Piece.createPiece("p", "black"), 2, 2);
+        //board.insertPiece(Piece.createPiece("p", "black"), 3, 3);
+        //board.insertPiece(Piece.createPiece("k", "black"), 7, 1);
+
+        // kings test avoiding emnemy king moves
         board.insertPiece(Piece.createPiece("k", "white"), 0, 0);
-        board.insertPiece(Piece.createPiece("q", "white"), 3,0);
-        board.insertPiece(Piece.createPiece("r", "white"), 1, 2);
-        board.insertPiece(Piece.createPiece("b", "white"), 0, 6);
-        board.insertPiece(Piece.createPiece("q", "black"), 5, 0);
-        board.insertPiece(Piece.createPiece("k", "black"), 7, 0);
+        board.insertPiece(Piece.createPiece("p", "black"), 2, 2);
+        board.insertPiece(Piece.createPiece("k", "black"), 3, 3);
     }
 
     setBoardFromFEN(FEN) {

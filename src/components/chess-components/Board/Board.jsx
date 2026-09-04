@@ -15,7 +15,8 @@ export default function Board({ className }) {
           const [board, setBoard] = useState(virtualBoard.board);
           const [selected, setSelected] = useState(null); // objeto com row e col
 
-          const legalMoves = (selected ? gm.getPiece(selected.row, selected.col) : null) ? gm.calculator.legalMoves(selected) : null;
+          const selectedPiece = (selected) ? gm.getPiece(selected.row, selected.col) : null;
+          const legalMoves = (selectedPiece && selectedPiece.color === gm.turn) ? gm.calculator.legalMoves(selected) : null;
           //console.log("in board, legal moves", legalMoves);
           useEffect(() => {
                     gm.setTestPosition();
@@ -72,14 +73,14 @@ export default function Board({ className }) {
                              Captured pieces: {gm.capturedPieces.map((piece) => `${piece.constructor.name}(${piece.color})`).join(", ")}
 
                               <div className={className}>
-                                        <div className={styles["row"]}>{createRow(0)}</div>
-                                        <div className={styles["row"]}>{createRow(1)}</div>
-                                        <div className={styles["row"]}>{createRow(2)}</div>
-                                        <div className={styles["row"]}>{createRow(3)}</div>
-                                        <div className={styles["row"]}>{createRow(4)}</div>
-                                        <div className={styles["row"]}>{createRow(5)}</div>
-                                        <div className={styles["row"]}>{createRow(6)}</div>
                                         <div className={styles["row"]}>{createRow(7)}</div>
+                                        <div className={styles["row"]}>{createRow(6)}</div>
+                                        <div className={styles["row"]}>{createRow(5)}</div>
+                                        <div className={styles["row"]}>{createRow(4)}</div>
+                                        <div className={styles["row"]}>{createRow(3)}</div>
+                                        <div className={styles["row"]}>{createRow(2)}</div>
+                                        <div className={styles["row"]}>{createRow(1)}</div>
+                                        <div className={styles["row"]}>{createRow(0)}</div>
                               </div>
 
                               <br></br>
