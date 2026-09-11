@@ -43,34 +43,78 @@ class Piece {
         throw new Error("You have to implement the method calculateLegalMoves!");
     }
 
-    static validatePawnMoves(origin,
+    static validatePawnMoves(
+        origin,
         legalMoves,
         color,
         enemyOccupiedAction,
         friendOcuppiedAction,
         notOccupiedAction,
-        virtualBoard){
-
-
-        const verticalIncrement = color === 'white' ? 1 : -1;
-        if ((color === 'white' && origin.row === 1) || (color === 'black' && origin.row === 6)){
-            Piece.validateMoves(origin,legalMoves,color,verticalIncrement,0,2,enemyOccupiedAction,friendOcuppiedAction,notOccupiedAction,virtualBoard);
-        } Piece.validateMoves(origin,legalMoves,color,verticalIncrement,0,1,enemyOccupiedAction,friendOcuppiedAction,notOccupiedAction,virtualBoard);
-        Piece.validateMoves(origin,legalMoves,color,verticalIncrement,-1,1,enemyOccupiedAction,friendOcuppiedAction,notOccupiedAction,virtualBoard);
-        Piece.validateMoves(origin,legalMoves,color,verticalIncrement,1,1,enemyOccupiedAction,friendOcuppiedAction,notOccupiedAction,virtualBoard);
-
-
+        virtualBoard
+    ) {
+        const verticalIncrement = color === "white" ? 1 : -1;
+        if ((color === "white" && origin.row === 1) || (color === "black" && origin.row === 6)) {
+            Piece.validateMoves(
+                origin,
+                legalMoves,
+                color,
+                verticalIncrement,
+                0,
+                2,
+                enemyOccupiedAction,
+                friendOcuppiedAction,
+                notOccupiedAction,
+                virtualBoard
+            );
+        }
+        Piece.validateMoves(
+            origin,
+            legalMoves,
+            color,
+            verticalIncrement,
+            0,
+            1,
+            enemyOccupiedAction,
+            friendOcuppiedAction,
+            notOccupiedAction,
+            virtualBoard
+        );
+        Piece.validateMoves(
+            origin,
+            legalMoves,
+            color,
+            verticalIncrement,
+            -1,
+            1,
+            enemyOccupiedAction,
+            friendOcuppiedAction,
+            notOccupiedAction,
+            virtualBoard
+        );
+        Piece.validateMoves(
+            origin,
+            legalMoves,
+            color,
+            verticalIncrement,
+            1,
+            1,
+            enemyOccupiedAction,
+            friendOcuppiedAction,
+            notOccupiedAction,
+            virtualBoard
+        );
     }
 
-    static validateKnightMoves(origin,
+    static validateKnightMoves(
+        origin,
         legalMoves,
         color,
         enemyOccupiedAction,
         friendOcuppiedAction,
         notOccupiedAction,
-        virtualBoard){
-
-         // top left-bottom
+        virtualBoard
+    ) {
+        // top left-bottom
         Piece.validateMoves(
             origin,
             legalMoves,
@@ -84,7 +128,7 @@ class Piece {
             virtualBoard
         );
 
-         // top left-top
+        // top left-top
         Piece.validateMoves(
             origin,
             legalMoves,
@@ -97,7 +141,7 @@ class Piece {
             notOccupiedAction,
             virtualBoard
         );
-         // top right-top
+        // top right-top
         Piece.validateMoves(
             origin,
             legalMoves,
@@ -110,7 +154,7 @@ class Piece {
             notOccupiedAction,
             virtualBoard
         );
-         // top right-bottom
+        // top right-bottom
         Piece.validateMoves(
             origin,
             legalMoves,
@@ -124,7 +168,7 @@ class Piece {
             virtualBoard
         );
 
-         // bottom right-top
+        // bottom right-top
         Piece.validateMoves(
             origin,
             legalMoves,
@@ -138,7 +182,7 @@ class Piece {
             virtualBoard
         );
 
-         // bottom right-bottom
+        // bottom right-bottom
         Piece.validateMoves(
             origin,
             legalMoves,
@@ -151,7 +195,7 @@ class Piece {
             notOccupiedAction,
             virtualBoard
         );
-         // bottom left-bottom
+        // bottom left-bottom
         Piece.validateMoves(
             origin,
             legalMoves,
@@ -164,7 +208,7 @@ class Piece {
             notOccupiedAction,
             virtualBoard
         );
-         // bottom left-top
+        // bottom left-top
         Piece.validateMoves(
             origin,
             legalMoves,
@@ -177,8 +221,6 @@ class Piece {
             notOccupiedAction,
             virtualBoard
         );
-
-
     }
 
     static validateBishopMoves(
@@ -574,14 +616,11 @@ class Piece {
             virtualBoard
         );
 
-
-
         return pinData;
     }
 
-    static checkEnemyAttacking(virtualBoard, origin, row, col){
-
-         const friendsExceptForKing = (row, col) => {
+    static checkEnemyAttacking(virtualBoard, origin, row, col) {
+        const friendsExceptForKing = (row, col) => {
             if (
                 virtualBoard.getPiece(row, col) &&
                 virtualBoard.getPiece(row, col) === virtualBoard.getPiece(origin.row, origin.col)
@@ -594,16 +633,39 @@ class Piece {
 
         let enemyIsNotChecking = true;
 
-            // validateRookpMoves(origin, legalMoves, enemyOccupiedAction, friendOcuppiedAction, notOccupiedAction, virtualBoard)
-            Piece.validateRookMoves(
+        // validateRookpMoves(origin, legalMoves, enemyOccupiedAction, friendOcuppiedAction, notOccupiedAction, virtualBoard)
+        Piece.validateRookMoves(
+            { row, col },
+            null,
+            this.color,
+            (row, col) => {
+                // enemyOccupiedAction
+                if (
+                    virtualBoard.board[row][col].constructor.name === "Queen" ||
+                    virtualBoard.board[row][col].constructor.name === "Rook"
+                ) {
+                    enemyIsNotChecking = false;
+                    return false;
+                }
+            },
+            friendsExceptForKing,
+            () => {
+                //lookingForRooks[row, col] = true;
+                return false;
+            },
+            virtualBoard
+        );
+
+        if (enemyIsNotChecking) {
+            //(origin,legalMoves,color, enemyOccupiedAction,friendOcuppiedAction,notOccupiedAction,virtualBoard)
+            Piece.validateBishopMoves(
                 { row, col },
                 null,
                 this.color,
                 (row, col) => {
-                    // enemyOccupiedAction
                     if (
                         virtualBoard.board[row][col].constructor.name === "Queen" ||
-                        virtualBoard.board[row][col].constructor.name === "Rook"
+                        virtualBoard.board[row][col].constructor.name === "Bishop"
                     ) {
                         enemyIsNotChecking = false;
                         return false;
@@ -616,40 +678,14 @@ class Piece {
                 },
                 virtualBoard
             );
+        }
 
-            if (enemyIsNotChecking) {
-                //(origin,legalMoves,color, enemyOccupiedAction,friendOcuppiedAction,notOccupiedAction,virtualBoard)
-                Piece.validateBishopMoves(
-                    { row, col },
-                    null,
-                    this.color,
-                    (row, col) => {
-                        if (
-                            virtualBoard.board[row][col].constructor.name === "Queen" ||
-                            virtualBoard.board[row][col].constructor.name === "Bishop"
-                        ) {
-                            enemyIsNotChecking = false;
-                            return false;
-                        }
-                    },
-                    friendsExceptForKing,
-                    () => {
-                        //lookingForRooks[row, col] = true;
-                        return false;
-                    },
-                    virtualBoard
-                );
-            }
-
-            if(enemyIsNotChecking){
-                // analyze castle possibility
-                // if gm.castling is available for each section:
-                // if row, col is empty
-                // then we need to analyze any checks on the second square of castling
-
-
-
-            }
+        if (enemyIsNotChecking) {
+            // analyze castle possibility
+            // if gm.castling is available for each section:
+            // if row, col is empty
+            // then we need to analyze any checks on the second square of castling
+        }
         return enemyIsNotChecking;
     }
 }
@@ -670,7 +706,6 @@ class King extends Piece {
         };
 
         const friendsExceptForKing = (row, col) => {
-
             if (
                 virtualBoard.getPiece(row, col) &&
                 virtualBoard.getPiece(row, col) === virtualBoard.getPiece(origin.row, origin.col)
@@ -681,13 +716,9 @@ class King extends Piece {
             }
         };
 
-
         const avoidDirectCheck = (analyzingRow, analyzingCol) => {
-
             let enemyIsNotChecking = true;
             // validateRookpMoves(origin, legalMoves, enemyOccupiedAction, friendOcuppiedAction, notOccupiedAction, virtualBoard)
-
-
 
             // this sequence of validateMoves is to look if there's an enemy piece that can go to the analyzingSquare
             Piece.validateKingMoves(
@@ -696,46 +727,17 @@ class King extends Piece {
                 this.color,
                 (row, col) => {
                     // enemyOccupiedAction
-                    if (
-                        virtualBoard.board[row][col].constructor.name === "King"
-                    ) {
+                    if (virtualBoard.board[row][col].constructor.name === "King") {
                         enemyIsNotChecking = false;
+                    } else if (
+                        virtualBoard.board[row][col].constructor.name === "Pawn" &&
+                        (analyzingCol + 1 === col || analyzingCol - 1 === col)
+                    ) {
+                        const enemyPawnDirection = this.color === "white" ? -1 : 1;
 
-                    } else if (virtualBoard.board[row][col].constructor.name === "Pawn" && (analyzingCol + 1 === col || analyzingCol - 1 === col)){
-
-                        const enemyPawnDirection = (this.color === 'white') ? -1 : 1;
-
-                            if(analyzingRow - enemyPawnDirection === row ){
-                                enemyIsNotChecking = false;
-                            }
+                        if (analyzingRow - enemyPawnDirection === row) {
+                            enemyIsNotChecking = false;
                         }
-                    return true;
-                },
-                friendsExceptForKing,
-                () => {
-                    //lookingForRooks[row, col] = true;
-                    return false;
-                },
-                virtualBoard
-            );
-
-
-            if (enemyIsNotChecking) {
-            Piece.validateRookMoves(
-                { row: analyzingRow, col: analyzingCol },
-                null,
-                this.color,
-                (row, col) => {
-                    // enemyOccupiedAction
-
-
-
-                    if (
-                        virtualBoard.board[row][col].constructor.name === "Queen" ||
-                        virtualBoard.board[row][col].constructor.name === "Rook"
-                    ) {
-                        enemyIsNotChecking = false;
-
                     }
                     return true;
                 },
@@ -746,6 +748,30 @@ class King extends Piece {
                 },
                 virtualBoard
             );
+
+            if (enemyIsNotChecking) {
+                Piece.validateRookMoves(
+                    { row: analyzingRow, col: analyzingCol },
+                    null,
+                    this.color,
+                    (row, col) => {
+                        // enemyOccupiedAction
+
+                        if (
+                            virtualBoard.board[row][col].constructor.name === "Queen" ||
+                            virtualBoard.board[row][col].constructor.name === "Rook"
+                        ) {
+                            enemyIsNotChecking = false;
+                        }
+                        return true;
+                    },
+                    friendsExceptForKing,
+                    () => {
+                        //lookingForRooks[row, col] = true;
+                        return false;
+                    },
+                    virtualBoard
+                );
             }
             if (enemyIsNotChecking) {
                 //(origin,legalMoves,color, enemyOccupiedAction,friendOcuppiedAction,notOccupiedAction,virtualBoard)
@@ -754,9 +780,6 @@ class King extends Piece {
                     null,
                     this.color,
                     (row, col) => {
-
-
-
                         if (
                             virtualBoard.board[row][col].constructor.name === "Queen" ||
                             virtualBoard.board[row][col].constructor.name === "Bishop"
@@ -795,26 +818,18 @@ class King extends Piece {
                 );
             }
 
-            if(enemyIsNotChecking){
-                // analyze castle possibility
-                // if gm.castling is available for each section:
-                // if row, col is empty
-                // then we need to analyze any checks on the second square of castling
-
-
-
-            }
-
             let willBreak = false;
+
+            // this willBreak logic is for castling purposes
 
             if (enemyIsNotChecking) {
                 legalMoves[analyzingRow][analyzingCol] = true;
+                //willBreak = true;
+            } else{
                 willBreak = true;
             }
-
             return willBreak;
         };
-
 
         Piece.validateKingMoves(
             origin,
@@ -826,11 +841,39 @@ class King extends Piece {
             virtualBoard
         );
 
-
         // castling
+        // validateMoves( originPosition, matrix, color, verticalIncrement, horizontalIncrement, maxDistance, enemyOccupiedAction, friendOcuppiedAction, notOccupiedAction, virtualBoard ) {
 
-
-
+        if (origin.col === 4) {
+            if (game.castlingAvailable[this.color + "King"]) {
+                Piece.validateMoves(
+                    origin,
+                    legalMoves,
+                    this.color,
+                    0,
+                    1,
+                    2,
+                    () => true,
+                    () => true,
+                    avoidDirectCheck,
+                    virtualBoard
+                );
+            }
+            if (game.castlingAvailable[this.color + "Queen"]) {
+                Piece.validateMoves(
+                    origin,
+                    legalMoves,
+                    this.color,
+                    0,
+                    -1,
+                    2,
+                    () => true,
+                    () => true,
+                    avoidDirectCheck,
+                    virtualBoard
+                );
+            }
+        }
     }
 
     toString() {
@@ -852,7 +895,7 @@ class Queen extends Piece {
     calculateLegalMoves(origin, legalMoves, game) {
         const virtualBoard = game.virtualBoard;
 
-        const pinData = this.calculatePin(origin,legalMoves,virtualBoard);;
+        const pinData = this.calculatePin(origin, legalMoves, virtualBoard);
 
         const actOnEnemy = (row, col) => {
             legalMoves[row][col] = true;
@@ -880,7 +923,6 @@ class Queen extends Piece {
 
             const attackerRow = pinData.attacker.row;
             const attackerCol = pinData.attacker.col;
-
 
             // let i = 6-1, j=0; 6+1!===1&&0-0!===0
             for (
@@ -924,7 +966,7 @@ class Rook extends Piece {
     calculateLegalMoves(origin, legalMoves, game) {
         const virtualBoard = game.virtualBoard;
 
-        const pinData = this.calculatePin(origin,legalMoves,virtualBoard);
+        const pinData = this.calculatePin(origin, legalMoves, virtualBoard);
 
         const actOnEnemy = (row, col) => {
             legalMoves[row][col] = true;
@@ -956,7 +998,6 @@ class Rook extends Piece {
                     i - VI !== attackerRow || j - HI !== attackerCol;
                     i += VI, j += HI
                 ) {
-
                     legalMoves[i][j] = true;
                 }
             }
@@ -968,7 +1009,6 @@ class Rook extends Piece {
             const kingCol = pinData.king.col;
 
             for (let i = pieceRow + VI, j = pieceCol + HI; i !== kingRow || j !== kingCol; i += VI, j += HI) {
-
                 legalMoves[i][j] = true;
             }
 
@@ -1011,7 +1051,6 @@ class Bishop extends Piece {
             return false;
         };
 
-
         if (pinData) {
             const pieceRow = origin.row;
             const pieceCol = origin.col;
@@ -1039,7 +1078,6 @@ class Bishop extends Piece {
             const kingCol = pinData.king.col;
 
             for (let i = pieceRow + VI, j = pieceCol + HI; i !== kingRow || j !== kingCol; i += VI, j += HI) {
-
                 legalMoves[i][j] = true;
             }
 
@@ -1048,16 +1086,7 @@ class Bishop extends Piece {
             return;
         }
 
-            Piece.validateBishopMoves(
-                origin,
-                legalMoves,
-                this.color,
-                actOnEnemy,
-                actOnFriend,
-                actOnEmpty,
-                virtualBoard
-            );
-
+        Piece.validateBishopMoves(origin, legalMoves, this.color, actOnEnemy, actOnFriend, actOnEmpty, virtualBoard);
     }
 }
 
@@ -1091,21 +1120,11 @@ class Knight extends Piece {
             return false;
         };
 
-
         if (pinData) {
             return;
         }
 
-            Piece.validateKnightMoves(
-                origin,
-                legalMoves,
-                this.color,
-                actOnEnemy,
-                actOnFriend,
-                actOnEmpty,
-                virtualBoard
-            );
-
+        Piece.validateKnightMoves(origin, legalMoves, this.color, actOnEnemy, actOnFriend, actOnEmpty, virtualBoard);
     }
 }
 
@@ -1126,7 +1145,7 @@ class Pawn extends Piece {
         const pinData = this.calculatePin(origin, legalMoves, virtualBoard);
 
         const actOnEnemy = (row, col) => {
-            if(origin.row !== row && origin.col !== col){
+            if (origin.row !== row && origin.col !== col) {
                 legalMoves[row][col] = true;
             }
 
@@ -1138,39 +1157,28 @@ class Pawn extends Piece {
         };
 
         const actOnEmpty = (row, col) => {
-
-            if(origin.row === row || origin.col === col){
+            if (origin.row === row || origin.col === col) {
                 legalMoves[row][col] = true;
-            }
-            else if(game.enPassantSquare && game.enPassantSquare.row === row && game.enPassantSquare.col === col){
+            } else if (game.enPassantSquare && game.enPassantSquare.row === row && game.enPassantSquare.col === col) {
                 legalMoves[row][col] = true;
             }
 
             return false;
         };
         if (pinData) {
-            const verticalIncrement = this.color === 'white' ? 1 : -1;
+            const verticalIncrement = this.color === "white" ? 1 : -1;
 
-
-            if (pinData.attacker.row === origin.row + verticalIncrement && (pinData.attacker.col === origin.col + 1 || pinData.attacker.col === origin.col - 1)){
-
+            if (
+                pinData.attacker.row === origin.row + verticalIncrement &&
+                (pinData.attacker.col === origin.col + 1 || pinData.attacker.col === origin.col - 1)
+            ) {
                 legalMoves[pinData.attacker.row][pinData.attacker.col] = true;
-
             }
 
             return;
         }
 
-            Piece.validatePawnMoves(
-                origin,
-                legalMoves,
-                this.color,
-                actOnEnemy,
-                actOnFriend,
-                actOnEmpty,
-                virtualBoard
-            );
-
+        Piece.validatePawnMoves(origin, legalMoves, this.color, actOnEnemy, actOnFriend, actOnEmpty, virtualBoard);
     }
 }
 

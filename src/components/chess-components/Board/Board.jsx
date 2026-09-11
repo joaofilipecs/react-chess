@@ -27,10 +27,23 @@ export default function Board({ className }) {
                     return board[rowIndex].map((piece, index, row) => {
                               const rowIndex = board.indexOf(row);
                               const colIndex = index;
+                              const stylesArray = [];
+                              const pieceSelected = selected && gm.getPiece(selected.row, selected.col);
+
+                              if(selected && selected.row === rowIndex && selected.col === colIndex){
+                                        stylesArray.push("selectedPiece");
+                              } else if(legalMoves && legalMoves[rowIndex][colIndex]){
+
+                                        if(piece && piece.color !== pieceSelected.color){
+                                                  stylesArray.push("capturingLegalMove");
+                                        } else{
+                                                  stylesArray.push("legalMove");
+                                        }
+                              }
 
                               return (
                                         <Square
-                                                  legalMove={legalMoves && legalMoves[rowIndex][colIndex] ? "legalMove" : ""}
+                                                 stylesArray={stylesArray}
                                                   onClick={() => {
                                                             console.log("selected", selected);
 
@@ -51,7 +64,7 @@ export default function Board({ className }) {
                                                                       } else {
                                                                                 setSelected(null);
                                                                       }
-                                                            } else {
+                                                            } else if (gm.getPiece(rowIndex, colIndex)){
                                                                       setSelected({ row: rowIndex, col: colIndex });
                                                             }
                                                                 } catch(chessError){
@@ -72,7 +85,7 @@ export default function Board({ className }) {
                     <>
                              Captured pieces: {gm.capturedPieces.map((piece) => `${piece.constructor.name}(${piece.color})`).join(", ")}
 
-                              <div className={className}>
+                              <div className={styles[className]}>
                                         <div className={styles["row"]}>{createRow(7)}</div>
                                         <div className={styles["row"]}>{createRow(6)}</div>
                                         <div className={styles["row"]}>{createRow(5)}</div>
@@ -93,39 +106,6 @@ export default function Board({ className }) {
                                         }}>
                                         Update to Standard Position
                               </button>
-                            <button
-                                        onClick={() => {
-                                                  console.log(gm.getKingPosition('white'))
-                                        }}>
-                                        Console White King Position
-                              </button>
-                            <button
-                                        onClick={() => {
-                                                  console.log(gm.getKingPosition('black'))
-                                        }}>
-                                        Console Black King Position
-                              </button>
-                              {/*
-
-                              <button
-                                        onClick={() => {
-                                                  virtualBoard.insertPiece(virtualBoard.removePiece(0, 1), 0, 0);
-                                        }}>
-                                        Move B king
-                              </button>
-                              <button
-                                        onClick={() => {
-                                                  console.log(virtualBoard.toString());
-                                        }}>
-                                        Display virtual board
-                              </button>
-                              <button
-                                        onClick={() => {
-                                                  setBoard(virtualBoard.board);
-                                        }}>
-                                       setBoard (update)
-                              </button>
-                              */}
                     </>
           );
 }

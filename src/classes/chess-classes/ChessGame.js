@@ -49,7 +49,7 @@ class ChessGame {
         this.fullMoves = 1;
     }
 
-    get enPassantSquare(){
+    get enPassantSquare() {
         return this.#enPassantSquare;
     }
     get capturedPieces() {
@@ -93,6 +93,8 @@ class ChessGame {
             );
         }
 
+        // castling
+
         let captured = board.getPiece(target.row, target.col);
         if (captured) {
             this.#capturedPieces.push(captured);
@@ -102,20 +104,56 @@ class ChessGame {
         const originPiece = board.removePiece(origin.row, origin.col);
         board.insertPiece(originPiece, target.row, target.col);
 
-
-            this.#enPassantSquare = null;
-        if (originPiece.constructor.name === 'Pawn'){
-            if(Math.abs(target.row - origin.row) === 2){
-                this.#enPassantSquare = {row: (origin.row / 2) + (target.row / 2), col: (origin.col /2) + (target.col / 2)};
-        }
-            if(!captured && origin.col !== target.col){
+        this.#enPassantSquare = null;
+        if (originPiece.constructor.name === "Pawn") {
+            if (Math.abs(target.row - origin.row) === 2) {
+                this.#enPassantSquare = { row: origin.row / 2 + target.row / 2, col: origin.col / 2 + target.col / 2 };
+            }
+            if (!captured && origin.col !== target.col) {
                 captured = board.getPiece(origin.row, target.col);
                 this.#capturedPieces.push(captured);
                 board.removePiece(origin.row, target.col);
             }
         }
 
+        if (originPiece.constructor.name === "King") {
+            // que besteira! Só fazer o this.castlingAvailable[originPiece.color + "Queen"] = false e pronto
+            if(Math.abs(origin.col - target.col) === 2){
+                const rookCol = (target.col === 6) ? 7 : 0;
+                const rookColTarget = (target.col === 6) ? 5 : 3;
 
+                console.log(rookColTarget)
+                const castlingRook = board.removePiece(origin.row, rookCol);
+                board.insertPiece(castlingRook, target.row, rookColTarget);
+            }
+
+            this.castlingAvailable[originPiece.color + "King"] = false;
+            this.castlingAvailable[originPiece.color + "Queen"] = false;
+        } else if (originPiece.constructor.name === "Rook") {
+
+
+
+
+
+            if (originPiece.color === "white") {
+                if (this.castlingAvailable.whiteQueen && origin.row === 0 && origin.col === 0) {
+                    this.castlingAvailable.whiteQueen = false;
+                } else if (this.castlingAvailable.whiteKing && origin.row === 0 && origin.col === 7) {
+                    this.castlingAvailable.whiteKing = false;
+                }
+            } else {
+               if (this.castlingAvailable.blackQueen && origin.row === 7 && origin.col === 0) {
+                    this.castlingAvailable.blackQueen = false;
+                } else if (this.castlingAvailable.blackKing && origin.row === 7 && origin.col === 7) {
+                    this.castlingAvailable.blackKing = false;
+                }
+            }
+
+
+
+        }
+
+            console.log(this.castlingAvailable);
         this.#turn = this.#turn.toLowerCase() === "black" ? "white" : "black";
 
         this.consoleBoard();
@@ -166,6 +204,27 @@ class ChessGame {
         const board = this.#virtualBoard;
         board.cleanBoard();
 
+
+
+        // all pawns
+        board.insertPiece(Piece.createPiece("p", "white"), 1, 0);
+        board.insertPiece(Piece.createPiece("p", "white"), 1, 1);
+        board.insertPiece(Piece.createPiece("p", "white"), 1, 2);
+        board.insertPiece(Piece.createPiece("p", "white"), 1, 3);
+        //board.insertPiece(Piece.createPiece("p", "white"), 1, 4);
+        board.insertPiece(Piece.createPiece("p", "white"), 1, 5);
+        board.insertPiece(Piece.createPiece("p", "white"), 1, 6);
+        board.insertPiece(Piece.createPiece("p", "white"), 1, 7);
+
+        // all pawns
+        board.insertPiece(Piece.createPiece("p", "black"), 6, 0);
+        board.insertPiece(Piece.createPiece("p", "black"), 6, 1);
+        board.insertPiece(Piece.createPiece("p", "black"), 6, 2);
+        board.insertPiece(Piece.createPiece("p", "black"), 6, 3);
+        board.insertPiece(Piece.createPiece("p", "black"), 6, 4);
+        board.insertPiece(Piece.createPiece("p", "black"), 6, 5);
+        board.insertPiece(Piece.createPiece("p", "black"), 6, 6);
+        board.insertPiece(Piece.createPiece("p", "black"), 6, 7);
 
         // bishop pin
         //board.insertPiece(Piece.createPiece("k", "white"), 0, 0);
@@ -229,9 +288,19 @@ class ChessGame {
         //board.insertPiece(Piece.createPiece("k", "black"), 7, 1);
 
         // kings test avoiding emnemy king moves
-        board.insertPiece(Piece.createPiece("k", "white"), 0, 0);
-        board.insertPiece(Piece.createPiece("p", "black"), 2, 2);
-        board.insertPiece(Piece.createPiece("k", "black"), 3, 3);
+        //board.insertPiece(Piece.createPiece("k", "white"), 0, 0);
+        //board.insertPiece(Piece.createPiece("p", "black"), 2, 2);
+        //board.insertPiece(Piece.createPiece("k", "black"), 3, 3);
+
+        // kings test avoiding emnemy king moves
+        board.insertPiece(Piece.createPiece("k", "white"), 0, 4);
+        board.insertPiece(Piece.createPiece("r", "white"), 0, 0);
+        board.insertPiece(Piece.createPiece("r", "white"), 0, 7);
+        board.insertPiece(Piece.createPiece("r", "black"), 7, 0);
+        board.insertPiece(Piece.createPiece("r", "black"), 7, 7);
+        board.insertPiece(Piece.createPiece("q", "black"), 4, 1);
+        board.insertPiece(Piece.createPiece("q", "white"), 4, 2);
+        board.insertPiece(Piece.createPiece("k", "black"), 7, 4);
     }
 
     setBoardFromFEN(FEN) {
@@ -247,7 +316,6 @@ class ChessGame {
     consoleBoard() {
         console.log(this.#virtualBoard.toString());
     }
-
 }
 
 export default ChessGame;
